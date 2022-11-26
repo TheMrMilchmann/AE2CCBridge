@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "id": "ae2cc",
+    "version": "${version}",
+
+    "name": "AE2CC Bridge",
+    "description": "This is an example description! Tell everyone what your mod is about!",
+    "authors": ["TheMrMilchmann"],
+    "contact": {
+        "issues": "https://github.com/TheMrMilchmann/AE2CCBridge/issues",
+        "sources": "https://github.com/TheMrMilchmann/AE2CCBridge"
+    },
+
+    "license": "MIT",
+    "icon": "assets/modid/icon.png",
+
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.themrmilchmann.ae2cc.AE2CCBridge"
+        ]
+    },
+
+    "depends": {
+        "fabric": "*",
+        "fabricloader": ">=0.14.3",
+        "minecraft": "~1.18",
+        "java": ">=17"
+    }
+}
