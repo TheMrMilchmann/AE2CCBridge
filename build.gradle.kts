@@ -32,9 +32,12 @@ dependencies {
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
 
+    modImplementation(libs.fabric.api)
+    modImplementation(libs.fabric.loader)
+
     modImplementation("dan200.computercraft:cc-restitched:v1.18.2-1.100.8")
 
-    modImplementation("curse.maven:ae2-223794:4023496") {
+    modImplementation("curse.maven:ae2-223794:4105157") {
         exclude(group="net.fabricmc.fabric-api")
     }
 }
