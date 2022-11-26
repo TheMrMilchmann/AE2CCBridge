@@ -1,0 +1,13 @@
+/.gradle
+!/.idea
+/.idea/*
+!/.idea/copyright
+!/.idea/scopes
+!/.idea/icon.png
+/build
+/out
+/run
+
+/buildSrc/.gradle
+/buildSrc/build
+/buildSrc/out
