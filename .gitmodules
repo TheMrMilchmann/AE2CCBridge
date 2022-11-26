@@ -1,0 +1,4 @@
+[submodule "cc-restitched"]
+	path = deps/cc-restitched
+	url = https://github.com/cc-tweaked/cc-restitched
+	branch = mc-1.18.x/stable
