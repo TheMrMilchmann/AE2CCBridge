@@ -97,6 +97,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         }
     }
 
+    @SuppressWarnings("FinalMethodInFinalClass")
     public final class AdapterPeripheral implements IPeripheral {
 
         private static Map<String, Object> deriveLuaRepresentation(AEKey key) {
@@ -171,7 +172,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         }
 
         @LuaFunction(mainThread = true)
-        public List<Map<String, Object>> getAvailableObjects() throws LuaException {
+        public final List<Map<String, Object>> getAvailableObjects() throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
             if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
 
@@ -204,7 +205,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         }
 
         @LuaFunction(mainThread = true)
-        public List<Map<String, Object>> getCraftableObjects() throws LuaException {
+        public final List<Map<String, Object>> getCraftableObjects() throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
             if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
 
@@ -216,7 +217,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         }
 
         @LuaFunction
-        public MethodResult scheduleCrafting(String type, String id, long amount, Optional<String> cpu) throws LuaException {
+        public final MethodResult scheduleCrafting(String type, String id, long amount, Optional<String> cpu) throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
             if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
 
