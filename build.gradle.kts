@@ -19,6 +19,16 @@ tasks {
 
 repositories {
     mavenCentral()
+
+    maven(url = "https://modmaven.dev/") {
+        content {
+            includeGroup("appeng")
+            includeGroup("mezz.jei")
+        }
+    }
+
+    // TODO clean up the mezz below
+
     maven(url = "https://squiddev.cc/maven")
     maven(url = "https://cursemaven.com") {
         content {
@@ -28,6 +38,14 @@ repositories {
 
     maven(url = "https://maven.shedaniel.me/")
     maven(url = "https://maven.terraformersmc.com/")
+
+
+    maven(url = "https://maven.bai.lol") {
+        content{
+            includeGroup("mcp.mobius.waila")
+            includeGroup("lol.bai")
+        }
+    }
 }
 
 dependencies {
@@ -37,9 +55,15 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.loader)
 
-    modImplementation("dan200.computercraft:cc-restitched:v1.18.2-1.100.8")
+    // TODO only depend on the API
+    modImplementation(libs.ae2)
 
-    modImplementation("curse.maven:ae2-223794:4105157") {
-        exclude(group="net.fabricmc.fabric-api")
-    }
+//    modCompileOnly(libs.ae2) {
+//        artifact { classifier = "api" }
+//    }
+//
+//    modLocalRuntime(libs.ae2)
+
+
+    modImplementation("dan200.computercraft:cc-restitched:v1.18.2-1.100.8")
 }
