@@ -22,6 +22,8 @@
     },
 
     "depends": {
+        "ae2": ">=11.6.6",
+        "computercraft": ">=1.100.8",
         "fabric": "*",
         "fabricloader": ">=0.14.3",
         "minecraft": "~1.18",
