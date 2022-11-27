@@ -4,7 +4,7 @@
     "version": "${version}",
 
     "name": "AE2CC Bridge",
-    "description": "This is an example description! Tell everyone what your mod is about!",
+    "description": "A simple Applied Energistics 2 to ComputerCraft bridge.",
     "authors": ["TheMrMilchmann"],
     "contact": {
         "issues": "https://github.com/TheMrMilchmann/AE2CCBridge/issues",
