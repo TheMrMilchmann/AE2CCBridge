@@ -25,9 +25,6 @@ public final class AE2CCBridge implements ModInitializer {
         Registry.register(Registry.BLOCK, "ae2cc:adapter", ADAPTER_BLOCK);
         Registry.register(Registry.ITEM, "ae2cc:adapter", new BlockItem(ADAPTER_BLOCK, new FabricItemSettings()));
 
-        AE2CCAdapterBlock block = (AE2CCAdapterBlock) ADAPTER_BLOCK;
-        block.setBlockEntity(AE2CCAdapterBlockEntity.class, ADAPTER_BLOCK_ENTITY, null, null);
-
         ComputerCraftAPI.registerPeripheralProvider((level, pos, dir) -> {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             return (blockEntity instanceof AE2CCAdapterBlockEntity ae2CCAdapterBlockEntity) ? ae2CCAdapterBlockEntity.asPeripheral() : null;
