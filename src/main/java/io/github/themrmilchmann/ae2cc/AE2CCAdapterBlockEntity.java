@@ -1,7 +1,8 @@
 package io.github.themrmilchmann.ae2cc;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IStackWatcher;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
@@ -9,8 +10,10 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.StorageHelper;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.google.common.collect.ImmutableSet;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
@@ -18,18 +21,22 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.StreamSupport;
 
-public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements IGridConnectedBlockEntity {
+public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements ICraftingRequester, IGridConnectedBlockEntity {
 
     private final ReentrantLock craftingJobLock = new ReentrantLock();
     private final List<CraftingJob> craftingJobs = new ArrayList<>();
@@ -38,41 +45,14 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
     private final AdapterPeripheral peripheral = new AdapterPeripheral();
 
-    private IStackWatcher craftingWatcher;
-
     public AE2CCAdapterBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(AE2CCBridge.ADAPTER_BLOCK_ENTITY, blockPos, blockState);
 
-        this.getMainNode().addService(ICraftingWatcherNode.class, new ICraftingWatcherNode() {
-
-            @Override
-            public void updateWatcher(IStackWatcher value) {
-                AE2CCAdapterBlockEntity.this.craftingWatcher = value;
-                AE2CCAdapterBlockEntity.this.configureWatcher();
-            }
-
-            @Override
-            public void onRequestChange(ICraftingService service, AEKey key) {
-                AE2CCAdapterBlockEntity.this.refreshState();
-            }
-
-        });
+        this.getMainNode().addService(ICraftingRequester.class, this);
     }
 
     public IPeripheral asPeripheral() {
         return this.peripheral;
-    }
-
-    private void configureWatcher() {
-        if (this.craftingWatcher == null) return;
-
-        this.craftingWatcher.reset();
-        ICraftingProvider.requestUpdate(this.getMainNode());
-
-        // TODO It might be better (for performance) to watch only for a subset of keys instead.
-        this.craftingWatcher.setWatchAll(true);
-
-        this.refreshState();
     }
 
     @Override
@@ -80,12 +60,23 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         return AE2CCBridge.ADAPTER_BLOCK.asItem();
     }
 
-    private void refreshState() {
+    @Override
+    public ImmutableSet<ICraftingLink> getRequestedJobs() {
+        return this.craftingJobs.stream().map(CraftingJob::link).collect(ImmutableSet.toImmutableSet());
+    }
+
+    @Override
+    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
+        return 0;
+    }
+
+    @Override
+    public void jobStateChange(ICraftingLink link) {
         this.craftingJobLock.lock();
 
         try {
             this.craftingJobs.removeIf(job -> {
-                if (job.link().isCanceled() || job.link().isDone()) {
+                if (job.link() == link) {
                     this.peripheral.notify(job);
                     return true;
                 }
@@ -95,6 +86,62 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         } finally {
             this.craftingJobLock.unlock();
         }
+    }
+
+    @Nullable
+    @Override
+    public IGridNode getActionableNode() {
+        return this.getGridNode();
+    }
+
+    @Override
+    public void loadTag(CompoundTag data) {
+        super.loadTag(data);
+
+        ListTag jobsTag = data.getList("jobs", Tag.TAG_COMPOUND);
+        List<CraftingJob> craftingJobs = new ArrayList<>();
+
+        for (int i = 0; i < jobsTag.size(); i++) {
+            CompoundTag jobTag = jobsTag.getCompound(i);
+            AEKey key = AEKey.fromTagGeneric(jobTag.getCompound("key"));
+            ICraftingLink link = StorageHelper.loadCraftingLink(jobTag.getCompound("link"), this);
+
+            craftingJobs.add(new CraftingJob(key, link));
+        }
+
+        this.craftingJobLock.lock();
+
+        try {
+            this.craftingJobs.clear();
+            this.craftingJobs.addAll(craftingJobs);
+        } finally {
+            this.craftingJobLock.unlock();
+        }
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag data) {
+        super.saveAdditional(data);
+
+        ListTag jobsTag = new ListTag();
+
+        this.craftingJobLock.lock();
+
+        try {
+            for (CraftingJob job : this.craftingJobs) {
+                CompoundTag jobTag = new CompoundTag();
+                jobTag.put("key", job.key().toTagGeneric());
+
+                CompoundTag linkTag = new CompoundTag();
+                job.link().writeToNBT(linkTag);
+
+                jobTag.put("link", linkTag);
+            }
+        } finally {
+            this.craftingJobLock.unlock();
+        }
+
+        data.put("jobs", jobsTag);
     }
 
     @SuppressWarnings("FinalMethodInFinalClass")
@@ -266,7 +313,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                     .orElseThrow(() -> new LuaException("Cannot find crafting CPU with name '" + cpu.get() + "'"));
             }
 
-            ICraftingSubmitResult craftingSubmitResult = craftingService.trySubmitJob(craftingPlan, null, craftingCPU, false, actionSource);
+            ICraftingSubmitResult craftingSubmitResult = craftingService.trySubmitJob(craftingPlan, AE2CCAdapterBlockEntity.this, craftingCPU, false, actionSource);
             if (!craftingSubmitResult.successful()) {
                 // TODO provide a better error message
                 throw new LuaException("Cannot submit crafting plan");
