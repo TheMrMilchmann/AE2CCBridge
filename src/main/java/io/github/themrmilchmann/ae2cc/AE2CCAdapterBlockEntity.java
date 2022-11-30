@@ -5,6 +5,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -16,7 +19,6 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.google.common.collect.ImmutableSet;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.BlockPos;
@@ -29,19 +31,45 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.StreamSupport;
 
-public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements ICraftingRequester, IGridConnectedBlockEntity {
+public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements ICraftingRequester, IGridConnectedBlockEntity, IGridTickable {
+
+    private static Map<String, Object> deriveLuaRepresentation(AEKey key) {
+        String displayName, id, type;
+
+        if (key instanceof AEFluidKey) {
+            type = "fluid";
+        } else if (key instanceof AEItemKey) {
+            type = "item";
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        id = key.getId().toString();
+        displayName = key.getDisplayName().getString();
+
+        return Map.of(
+            "type", type,
+            "id", id,
+            "displayName", displayName
+        );
+    }
+
+    private final ReentrantLock pendingJobLock = new ReentrantLock();
+    private final List<PendingCraftingJob> pendingJobs = new ArrayList<>();
 
     private final ReentrantLock craftingJobLock = new ReentrantLock();
     private final List<CraftingJob> craftingJobs = new ArrayList<>();
 
-    private record CraftingJob(AEKey key, ICraftingLink link) {}
+    private record PendingCraftingJob(UUID id, Future<ICraftingPlan> futureCraftingPlan, @Nullable String cpu) {}
+    private record CraftingJob(UUID id, ICraftingLink link) {}
 
     private final AdapterPeripheral peripheral = new AdapterPeripheral();
 
@@ -49,6 +77,85 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         super(AE2CCBridge.ADAPTER_BLOCK_ENTITY, blockPos, blockState);
 
         this.getMainNode().addService(ICraftingRequester.class, this);
+        this.getMainNode().addService(IGridTickable.class, this);
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(10, 10, false, false);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        this.pendingJobLock.lock();
+
+        try {
+            ICraftingService craftingService = node.getGrid().getCraftingService();
+
+            Iterator<PendingCraftingJob> pendingJobIterator = this.pendingJobs.iterator();
+
+            while (pendingJobIterator.hasNext()) {
+                PendingCraftingJob pendingJob = pendingJobIterator.next();
+                Future<ICraftingPlan> futureCraftingPlan = pendingJob.futureCraftingPlan();
+
+                if (futureCraftingPlan.isCancelled()) {
+                    pendingJobIterator.remove();
+                    this.peripheral.notify("ae2cc:crafting_cancelled", pendingJob.id().toString());
+
+                    continue;
+                }
+
+                if (!futureCraftingPlan.isDone()) continue;
+                pendingJobIterator.remove();
+
+                ICraftingPlan craftingPlan;
+
+                try {
+                    craftingPlan = futureCraftingPlan.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+
+                ICraftingCPU craftingCPU = null;
+
+                if (pendingJob.cpu() != null) {
+                    craftingCPU = craftingService.getCpus().stream().filter(it -> {
+                        Component cpuName = it.getName();
+                        return cpuName != null && pendingJob.cpu().equals(cpuName.getString());
+                    }).findAny().orElse(null);
+
+                    if (craftingCPU == null) {
+                        // TODO provide error information
+                        this.peripheral.notify("ae2cc:crafting_cancelled", pendingJob.id().toString());
+                        continue;
+                    }
+                }
+
+                IActionSource actionSource = IActionSource.ofMachine(this);
+                ICraftingSubmitResult craftingSubmitResult = node.getGrid().getCraftingService().trySubmitJob(craftingPlan, this, craftingCPU, false, actionSource);
+                if (!craftingSubmitResult.successful()) {
+                    // TODO provide error information
+                    this.peripheral.notify("ae2cc:crafting_cancelled", pendingJob.id().toString());
+                    continue;
+                }
+
+                ICraftingLink craftingLink = craftingSubmitResult.link();
+                CraftingJob craftingJob = new CraftingJob(pendingJob.id(), craftingLink);
+
+                craftingJobLock.lock();
+
+                try {
+                    craftingJobs.add(craftingJob);
+                    this.peripheral.notify("ae2cc:crafting_started", craftingJob.id().toString());
+                } finally {
+                    craftingJobLock.unlock();
+                }
+            }
+
+            return this.pendingJobs.isEmpty() ? TickRateModulation.IDLE : TickRateModulation.FASTER;
+        } finally {
+            this.pendingJobLock.unlock();
+        }
     }
 
     public IPeripheral asPeripheral() {
@@ -77,7 +184,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         try {
             this.craftingJobs.removeIf(job -> {
                 if (job.link() == link) {
-                    this.peripheral.notify(job);
+                    this.peripheral.notify("ae2cc:crafting_done", job.id().toString());
                     return true;
                 }
 
@@ -103,10 +210,10 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
         for (int i = 0; i < jobsTag.size(); i++) {
             CompoundTag jobTag = jobsTag.getCompound(i);
-            AEKey key = AEKey.fromTagGeneric(jobTag.getCompound("key"));
+            UUID id = jobTag.getUUID("id");
             ICraftingLink link = StorageHelper.loadCraftingLink(jobTag.getCompound("link"), this);
 
-            craftingJobs.add(new CraftingJob(key, link));
+            craftingJobs.add(new CraftingJob(id, link));
         }
 
         this.craftingJobLock.lock();
@@ -130,7 +237,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         try {
             for (CraftingJob job : this.craftingJobs) {
                 CompoundTag jobTag = new CompoundTag();
-                jobTag.put("key", job.key().toTagGeneric());
+                jobTag.putUUID("id", job.id());
 
                 CompoundTag linkTag = new CompoundTag();
                 job.link().writeToNBT(linkTag);
@@ -146,27 +253,6 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
     @SuppressWarnings("FinalMethodInFinalClass")
     public final class AdapterPeripheral implements IPeripheral {
-
-        private static Map<String, Object> deriveLuaRepresentation(AEKey key) {
-            String displayName, id, type;
-
-            if (key instanceof AEFluidKey) {
-                type = "fluid";
-            } else if (key instanceof AEItemKey) {
-                type = "item";
-            } else {
-                throw new IllegalArgumentException();
-            }
-
-            id = key.getId().toString();
-            displayName = key.getDisplayName().getString();
-
-            return Map.of(
-                "type", type,
-                "id", id,
-                "displayName", displayName
-            );
-        }
 
         private final ReentrantLock attachedComputerLock = new ReentrantLock();
         private final List<IComputerAccess> attachedComputers = new ArrayList<>();
@@ -206,12 +292,12 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
             }
         }
 
-        private void notify(CraftingJob job) {
+        private void notify(String event, Object... data) {
             this.attachedComputerLock.lock();
 
             try {
                 for (IComputerAccess attachedComputer : this.attachedComputers) {
-                    attachedComputer.queueEvent("ae2cc:crafting_done", deriveLuaRepresentation(job.key()));
+                    attachedComputer.queueEvent(event, data);
                 }
             } finally {
                 this.attachedComputerLock.unlock();
@@ -259,12 +345,12 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
             ICraftingService craftingService = grid.getCraftingService();
             return craftingService.getCraftables((it) -> it instanceof AEFluidKey || it instanceof AEItemKey)
                 .stream()
-                .map(AdapterPeripheral::deriveLuaRepresentation)
+                .map(AE2CCAdapterBlockEntity::deriveLuaRepresentation)
                 .toList();
         }
 
         @LuaFunction
-        public final MethodResult scheduleCrafting(String type, String id, long amount, Optional<String> cpu) throws LuaException {
+        public final String scheduleCrafting(String type, String id, long amount, Optional<String> cpu) throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
             if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
 
@@ -294,43 +380,21 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 CalculationStrategy.CRAFT_LESS
             );
 
-            ICraftingPlan craftingPlan;
+            pendingJobLock.lock();
 
             try {
-                // TODO The docs warn not to do this. There must be a better way.
-                craftingPlan = futureCraftingPlan.get();
-            } catch (Exception e) {
-                throw new LuaException("Cannot calculate crafting plan");
-            }
+                UUID jobID = UUID.randomUUID();
+                PendingCraftingJob pendingCraftingJob = new PendingCraftingJob(
+                    jobID,
+                    futureCraftingPlan,
+                    cpu.orElse(null)
+                );
 
-            ICraftingCPU craftingCPU = null;
-
-            if (cpu.isPresent()) {
-                craftingCPU = cpu.flatMap(targetName -> craftingService.getCpus().stream().filter(it -> {
-                        Component cpuName = it.getName();
-                        return cpuName != null && targetName.equals(cpuName.getString());
-                    }).findAny())
-                    .orElseThrow(() -> new LuaException("Cannot find crafting CPU with name '" + cpu.get() + "'"));
-            }
-
-            ICraftingSubmitResult craftingSubmitResult = craftingService.trySubmitJob(craftingPlan, AE2CCAdapterBlockEntity.this, craftingCPU, false, actionSource);
-            if (!craftingSubmitResult.successful()) {
-                // TODO provide a better error message
-                throw new LuaException("Cannot submit crafting plan");
-            }
-
-            ICraftingLink craftingLink = craftingSubmitResult.link();
-            CraftingJob craftingJob = new CraftingJob(key, craftingLink);
-
-            craftingJobLock.lock();
-
-            try {
-                craftingJobs.add(craftingJob);
+                pendingJobs.add(pendingCraftingJob);
+                return jobID.toString();
             } finally {
-                craftingJobLock.unlock();
+                pendingJobLock.unlock();
             }
-
-            return MethodResult.of(true);
         }
 
     }

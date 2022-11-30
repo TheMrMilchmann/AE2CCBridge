@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.loom)
 }
 
-version = "0.0.1-1.18.2-FABRIC-0.0"
+version = "0.0.2-1.18.2-FABRIC-0.0"
 
 java {
     toolchain {
