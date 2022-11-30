@@ -4,7 +4,7 @@
     "version": "${version}",
 
     "name": "AE2CC Bridge",
-    "description": "A simple Applied Energistics 2 to ComputerCraft bridge.",
+    "description": "An Applied Energistics 2 bridge for ComputerCraft",
     "authors": ["TheMrMilchmann"],
     "contact": {
         "issues": "https://github.com/TheMrMilchmann/AE2CCBridge/issues",
