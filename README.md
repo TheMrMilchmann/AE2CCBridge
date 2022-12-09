@@ -24,6 +24,23 @@ Returns a list of objects that can be crafted by the ME system.
    a list of objects that can be crafted by the ME system
 
 
+### `getIssuedCraftingJobs`
+
+Returns a list of unfinished crafting jobs issued by the peripheral.
+
+#### Returns
+
+1. `{ { state = string, jobID = string, systemID? = string }... }` – a table with
+   a list of objects for each unfinished job issued by the peripheral.
+
+#### Remarks
+
+For a job to be included in the output, its state must either be `SCHEDULED` or
+`STARTED`. If the job has started running, an additional `systemID` is field is
+included. This ID is the ID given to the running job by the ME system (opposed
+to the `jobID` which is local to a peripheral).
+
+
 ### `scheduleCrafting(type, id, amount [, cpu])`
 
 Schedules a crafting job.

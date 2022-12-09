@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements ICraftingRequester, IGridConnectedBlockEntity, IGridTickable {
@@ -347,6 +348,33 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 .stream()
                 .map(AE2CCAdapterBlockEntity::deriveLuaRepresentation)
                 .toList();
+        }
+
+        @LuaFunction
+        public final List<Map<String, Object>> getIssuedCraftingJobs() {
+            pendingJobLock.lock();
+
+            try {
+                craftingJobLock.lock();
+
+                try {
+                    return Stream.concat(
+                        pendingJobs.stream().map(pendingJob -> Map.<String, Object>of(
+                            "state", "SCHEDULED",
+                            "jobID", pendingJob.id().toString()
+                        )),
+                        craftingJobs.stream().map(craftingJob -> Map.<String, Object>of(
+                            "state", "STARTED",
+                            "jobID", craftingJob.id().toString(),
+                            "systemID", craftingJob.link().getCraftingID()
+                        ))
+                    ).toList();
+                } finally {
+                    craftingJobLock.unlock();
+                }
+            } finally {
+                pendingJobLock.unlock();
+            }
         }
 
         @LuaFunction
