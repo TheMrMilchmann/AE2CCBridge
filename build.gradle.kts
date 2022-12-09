@@ -108,15 +108,6 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.loader)
 
-    // TODO only depend on the API
     modImplementation(libs.ae2)
-
-//    modCompileOnly(libs.ae2) {
-//        artifact { classifier = "api" }
-//    }
-//
-//    modLocalRuntime(libs.ae2)
-
-
     modImplementation(libs.cc.restitched)
 }
