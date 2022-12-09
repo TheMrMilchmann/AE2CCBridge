@@ -54,12 +54,12 @@ where `jobStatus` is a table defined as follows:
 
 where `output` is defined as follows:
 
-| Key           | Type     | Description                                         |
-|---------------|----------|-----------------------------------------------------|
-| `amount`      | `number` | The number of requested objects.                    |
-| `type`        | `string` | The type of the object. (Either `FLUID` or `ITEM`.) |
-| `id`          | `string` | The ID of the object.                               |
-| `displayName` | `string` | The display name of the object.                     |
+| Key           | Type     | Description                      |
+|---------------|----------|----------------------------------|
+| `amount`      | `number` | The number of requested objects. |
+| `type`        | `string` | The type of the object.          |
+| `id`          | `string` | The ID of the object.            |
+| `displayName` | `string` | The display name of the object.  |
 
 
 #### Remarks
@@ -76,7 +76,7 @@ Returns a list of unfinished crafting jobs issued by the peripheral.
 
 #### Returns
 
-1. `{ { state = string, jobID = string, systemID? = string }... }` – a table with
+1. `{ { state = string, jobID = string, systemID = string? }... }` – a table with
    a list of objects for each unfinished job issued by the peripheral.
 
 #### Remarks
