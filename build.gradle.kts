@@ -61,6 +61,26 @@ publishing {
 repositories {
     mavenCentral()
 
+    maven(url = "https://maven.bai.lol") {
+        content {
+            includeGroup("lol.bai")
+            includeGroup("mcp.mobius.waila")
+        }
+    }
+
+    maven(url = "https://maven.shedaniel.me/") {
+        content {
+            includeGroup("me.shedaniel.cloth")
+            includeGroup("me.shedaniel.cloth.api")
+        }
+    }
+
+    maven(url = "https://maven.terraformersmc.com/") {
+        content {
+            includeGroup("com.terraformersmc")
+        }
+    }
+
     maven(url = "https://modmaven.dev/") {
         content {
             includeGroup("appeng")
@@ -68,29 +88,15 @@ repositories {
         }
     }
 
+    maven(url = "https://squiddev.cc/maven") {
+        content {
+            includeGroup("org.squiddev")
+        }
+    }
+
     mavenLocal {
         content {
             includeGroup("dan200.computercraft")
-        }
-    }
-
-    // TODO clean up the mess below
-
-    maven(url = "https://squiddev.cc/maven")
-    maven(url = "https://cursemaven.com") {
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-
-    maven(url = "https://maven.shedaniel.me/")
-    maven(url = "https://maven.terraformersmc.com/")
-
-
-    maven(url = "https://maven.bai.lol") {
-        content {
-            includeGroup("mcp.mobius.waila")
-            includeGroup("lol.bai")
         }
     }
 }
@@ -112,5 +118,5 @@ dependencies {
 //    modLocalRuntime(libs.ae2)
 
 
-    modImplementation("dan200.computercraft:cc-restitched:1.100.8")
+    modImplementation(libs.cc.restitched)
 }

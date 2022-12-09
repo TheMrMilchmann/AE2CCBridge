@@ -1,5 +1,6 @@
 [versions]
 ae2 = "11.6.6"
+cc-restitched = "1.100.8"
 curseforge-publish = "0.3.0"
 fabric-api = "0.59.0+1.18.2"
 fabric-loader = "0.14.9"
@@ -11,6 +12,11 @@ minecraft = "1.18.2"
 # appeng - Applied Energistics 2
 # https://github.com/AppliedEnergistics/Applied-Energistics-2
 ae2 = { module = "appeng:appliedenergistics2-fabric", version.ref = "ae2" }
+
+# com.github.cc-tweaked - CC:Restitched
+# https://github.com/cc-tweaked/cc-restitched
+# https://www.curseforge.com/minecraft/mc-mods/cc-restitched
+cc-restitched = { module = "dan200.computercraft:cc-restitched", version.ref = "cc-restitched" }
 
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
