@@ -8,13 +8,11 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.KeyCounter;
+import appeng.api.stacks.*;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.google.common.collect.ImmutableSet;
 import dan200.computercraft.api.lua.LuaException;
@@ -31,16 +29,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implements ICraftingRequester, IGridConnectedBlockEntity, IGridTickable {
+
+    private static final AtomicBoolean INTERNAL_ASSUMPTION_FAILED = new AtomicBoolean(false);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static Map<String, Object> deriveLuaRepresentation(AEKey key) {
         String displayName, id, type;
@@ -347,6 +352,73 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
             return craftingService.getCraftables((it) -> it instanceof AEFluidKey || it instanceof AEItemKey)
                 .stream()
                 .map(AE2CCAdapterBlockEntity::deriveLuaRepresentation)
+                .toList();
+        }
+
+        @LuaFunction
+        public final List<Map<String, Object>> getCraftingCPUs() throws LuaException {
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            Set<ICraftingCPU> cpus = grid.getCraftingService().getCpus();
+
+            return cpus.stream()
+                .map(cpu -> {
+                    String selectionMode = switch (cpu.getSelectionMode()) {
+                        case ANY -> "ANY";
+                        case MACHINE_ONLY -> "MACHINE_ONLY";
+                        case PLAYER_ONLY -> "PLAYER_ONLY";
+                    };
+
+                    HashMap<String, Object> data = new HashMap<>();
+                    data.put("availableCoProcessors", cpu.getCoProcessors());
+                    data.put("availableStorage", cpu.getAvailableStorage());
+                    data.put("selectionMode", selectionMode);
+
+                    Component name = cpu.getName();
+                    if (name != null) {
+                        data.put("name", name.getContents());
+                    }
+
+                    CraftingJobStatus jobStatus = cpu.getJobStatus();
+                    if (jobStatus != null) {
+                        Map<String, Object> jobData = new HashMap<>();
+                        jobData.put("totalObjects", jobStatus.totalItems());
+                        jobData.put("craftedObjects", jobStatus.progress());
+                        jobData.put("elapsedNanos", jobStatus.elapsedTimeNanos());
+
+                        if (cpu instanceof CraftingCPUCluster cluster) {
+                            ICraftingLink link = cluster.craftingLogic.getLastLink();
+                            if (link != null) {
+                                jobData.put("systemID", link.getCraftingID());
+                            }
+                        } else {
+                            if (!INTERNAL_ASSUMPTION_FAILED.getAndSet(true)) {
+                                LOGGER.error(
+                                    """
+                                    Incorrect assumption about AE2 internals:
+                                    ICraftingCPU implementation is not a CraftingCPUCluster: {}
+                                    
+                                    If you are using an up-to-date version of AE2CC, please make
+                                    sure that this is reported.
+                                    https://github.com/TheMrMilchmann/AE2CCBridge/issues
+                                    """,
+                                    cpu.getClass().getName()
+                                );
+                            }
+                        }
+
+                        GenericStack stack = jobStatus.crafting();
+                        Map<String, Object> stackData = new HashMap<>();
+                        stackData.put("amount", stack.amount());
+                        stackData.putAll(deriveLuaRepresentation(stack.what()));
+
+                        jobData.put("output", Map.copyOf(stackData));
+                        data.put("jobStatus", Map.copyOf(jobData));
+                    }
+
+                    return Map.copyOf(data);
+                })
                 .toList();
         }
 

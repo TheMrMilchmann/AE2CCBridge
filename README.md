@@ -24,6 +24,52 @@ Returns a list of objects that can be crafted by the ME system.
    a list of objects that can be crafted by the ME system
 
 
+### `getCraftingCPUs()`
+
+Returns a list of crafting CPUs available in the ME system.
+
+#### Returns
+
+1. `{ cpu... }`
+
+where `cpu` is a table defined as follows:
+
+| Key                     | Type      | Description                                                                      |
+|-------------------------|-----------|----------------------------------------------------------------------------------|
+| `availableCoProcessors` | `number`  | The number of available co-processors.                                           |
+| `availableStorage`      | `number`  | The amount of available crafting storage.                                        |
+| `selectionMode`         | `string`  | The selection mode of the CPU. (Either `ANY`, `MACHINE_ONLY`, or `PLAYER_ONLY`.) |
+| `jobStatus`             | `string?` | Information about the currently running job.                                     |
+| `name`                  | `string?` | The custom name of the CPU.                                                      |
+
+where `jobStatus` is a table defined as follows:
+
+| Key              | Type      | Description                                                           |
+|------------------|-----------|-----------------------------------------------------------------------|
+| `totalObjects`   | `number`  | The total amount of objects that will be crafted during the job.      |
+| `craftedObjects` | `number`  | The amount of crafted objects.                                        |
+| `elapsedNanos`   | `number`  | The time (in nanoseconds) that has elapsed since the job has started. |
+| `systemID`       | `string?` | The ID given to the running job by the ME system.                     |
+| `output`         | `output`  | The job's output.                                                     |
+
+where `output` is defined as follows:
+
+| Key           | Type     | Description                                         |
+|---------------|----------|-----------------------------------------------------|
+| `amount`      | `number` | The number of requested objects.                    |
+| `type`        | `string` | The type of the object. (Either `FLUID` or `ITEM`.) |
+| `id`          | `string` | The ID of the object.                               |
+| `displayName` | `string` | The display name of the object.                     |
+
+
+#### Remarks
+
+For technical reasons, determining the `systemID` may fail in some cases. If
+this happens, the `systemID` is not included and an error is logged. If you
+are using up-to-date versions of AE2 and AE2CC Bridge, please make sure this
+issue is known in the issue tracker for your versions.
+
+
 ### `getIssuedCraftingJobs`
 
 Returns a list of unfinished crafting jobs issued by the peripheral.
