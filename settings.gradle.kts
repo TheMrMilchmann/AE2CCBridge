@@ -28,5 +28,3 @@ pluginManagement {
         mavenCentral()
     }
 }
-
-includeBuild("./deps/cc-restitched")

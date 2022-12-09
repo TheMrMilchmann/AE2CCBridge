@@ -68,6 +68,12 @@ repositories {
         }
     }
 
+    mavenLocal {
+        content {
+            includeGroup("dan200.computercraft")
+        }
+    }
+
     // TODO clean up the mess below
 
     maven(url = "https://squiddev.cc/maven")

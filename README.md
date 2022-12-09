@@ -129,9 +129,9 @@ version was written for (e.g. "FABRIC").
 
 ## Supported versions
 
-| Minecraft Version                                                | State              |
-|------------------------------------------------------------------|--------------------|
-| 1.19                                                             | Mainline           |
+| Minecraft Version | State              |
+|-------------------|--------------------|
+| 1.18              | Mainline           |
 
 **This is the mainline repository** for the development of _AE2CC Bridge_ which
 usually targets the most recent Minecraft version. The development for other
@@ -157,6 +157,12 @@ to detect and select the JDKs required to run the build. Please refer to the
 build scripts to find out which toolchains are requested.
 
 An installed JDK 1.8 (or later) is required to use Gradle.
+
+A local installation of CC:Restitched is required to build this mod. The
+recommended way to create one is going to the submodule under `deps/cc-restitched`
+and calling:
+
+    gradlew jar publishToMavenLocal
 
 ### Building
 
