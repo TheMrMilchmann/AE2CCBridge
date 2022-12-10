@@ -1,6 +1,16 @@
 # AE2CC Bridge
 
-!TODO
+AE2CC Bridge adds a simple peripheral block that may be used to access an [Applied Energistics 2](https://github.com/AppliedEnergistics/Applied-Energistics-2)
+ME system from [ComputerCraft](https://github.com/cc-tweaked/cc-restitched) computers.
+
+Keep in mind that this mod is slightly unbalanced by design as the peripheral
+access to the ME system allows you to circumvent some channel limitations at
+practically no energy cost.
+
+> **Note**: Currently, the peripheral only exposes a fairly small API. If you
+> find that functionality you need is missing, please file a feature request in
+> our issue tracker.
+
 
 ## Peripheral API (Functions)
 
