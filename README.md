@@ -87,7 +87,7 @@ included. This ID is the ID given to the running job by the ME system (opposed
 to the `jobID` which is local to a peripheral).
 
 
-### `scheduleCrafting(type, id, amount [, cpu])`
+### `scheduleCrafting(type, id, amount)`
 
 Schedules a crafting job.
 
@@ -96,7 +96,6 @@ Schedules a crafting job.
 1. `type`: `string` – the type of the object to craft ("fluid" or "item")
 2. `id`: `string` – the ID of the object to craft
 3. `amount`: `number` – the amount of the object to craft
-4. `cpu?`: `string` – the name of the CPU to run the task on
 
 #### Returns
 

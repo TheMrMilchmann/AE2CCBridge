@@ -450,7 +450,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
         }
 
         @LuaFunction
-        public final String scheduleCrafting(String type, String id, long amount, Optional<String> cpu) throws LuaException {
+        public final String scheduleCrafting(String type, String id, long amount) throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
             if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
 
@@ -487,7 +487,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 PendingCraftingJob pendingCraftingJob = new PendingCraftingJob(
                     jobID,
                     futureCraftingPlan,
-                    cpu.orElse(null)
+                    null
                 );
 
                 pendingJobs.add(pendingCraftingJob);
