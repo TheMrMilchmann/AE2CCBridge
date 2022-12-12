@@ -7,6 +7,7 @@
     "description": "An Applied Energistics 2 bridge for ComputerCraft",
     "authors": ["TheMrMilchmann"],
     "contact": {
+        "homepage": "https://github.com/TheMrMilchmann/AE2CCBridge",
         "issues": "https://github.com/TheMrMilchmann/AE2CCBridge/issues",
         "sources": "https://github.com/TheMrMilchmann/AE2CCBridge"
     },
