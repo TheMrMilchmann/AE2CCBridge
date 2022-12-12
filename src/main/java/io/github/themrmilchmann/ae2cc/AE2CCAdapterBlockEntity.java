@@ -32,6 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -146,6 +147,8 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 }
 
                 ICraftingLink craftingLink = craftingSubmitResult.link();
+                assert craftingLink != null;
+
                 CraftingJob craftingJob = new CraftingJob(pendingJob.id(), craftingLink);
 
                 craftingJobLock.lock();
@@ -265,13 +268,14 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
         private final AE2CCAdapterBlockEntity blockEntity = AE2CCAdapterBlockEntity.this;
 
+        @Nonnull
         @Override
         public String getType() {
             return "ae2cc_adapter";
         }
 
         @Override
-        public boolean equals(IPeripheral obj) {
+        public boolean equals(@Nullable IPeripheral obj) {
             if (!(obj instanceof AdapterPeripheral other)) return false;
             return this.blockEntity == other.blockEntity;
         }
