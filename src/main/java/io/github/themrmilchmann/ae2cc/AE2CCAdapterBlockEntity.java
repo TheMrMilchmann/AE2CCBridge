@@ -463,11 +463,11 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
             AEKey key = switch (type) {
                 case "fluid" -> {
-                    Fluid fluid = Registry.FLUID.get(resourceLocation); // TODO check if this exists
+                    Fluid fluid = Registry.FLUID.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Fluid does not exist: " + resourceLocation));
                     yield AEFluidKey.of(fluid);
                 }
                 case "item" -> {
-                    Item item = Registry.ITEM.get(resourceLocation); // TODO check if this exists
+                    Item item = Registry.ITEM.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Item does not exist: " + resourceLocation));
                     yield AEItemKey.of(item);
                 }
                 default -> throw new LuaException("Invalid type: '" + type + "' (Valid types are 'fluid' and 'item')");
