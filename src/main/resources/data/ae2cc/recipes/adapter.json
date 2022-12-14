@@ -1,0 +1,32 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SPS",
+        "LCE",
+        "SMS"
+    ],
+    "key": {
+        "C": {
+            "item": "computercraft:computer_advanced"
+        },
+        "E": {
+            "item": "ae2:engineering_processor"
+        },
+        "L": {
+            "item": "ae2:logic_processor"
+        },
+        "M": {
+            "item": "ae2:controller"
+        },
+        "P": {
+            "item": "ae2:calculation_processor"
+        },
+        "S": {
+            "item": "ae2:smooth_sky_stone_block"
+        }
+    },
+    "result": {
+        "item": "ae2cc:adapter",
+        "count": 1
+    }
+}
