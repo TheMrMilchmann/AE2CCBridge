@@ -153,6 +153,21 @@ The `ae2cc:crafting_cancelled` event is fired when a crafting job is cancelled.
 
 1. `string` – the name of the event
 2. `string` – the ID of the cancelled crafting job
+3. `string` - the reason for the cancellation
+
+#### Remarks
+
+The reason for the cancellation is always one of:
+
+| Value                | Description                                                 |
+|----------------------|-------------------------------------------------------------|
+| `CANCELLED`          | The job was cancelled (either manually or by a machine).    |
+| `CPU_NOT_FOUND`      | The selected crafting CPU was not found.                    |
+| `NO_CPU_FOUND`       | No crafting CPU to execute the job was found.               |
+| `CPU_BUSY`           | The selected crafting CPU is busy.                          |
+| `CPU_OFFLINE`        | The selected crafting CPU is offline.                       |
+| `CPU_TO_SMALL`       | The selected crafting CPU is too small to process the job.  |
+| `MISSING_INGREDIENT` | Could not obtain one of the ingredients needed for the job. |
 
 
 ### `ae2cc:crafting_done`
