@@ -1,0 +1,21 @@
+### 1.0.0-1.18.2-FABRIC-0.0
+
+_Released 2022 Dec 15_
+
+#### Requirements
+- **Applied Energistics 2:** 11.6.6
+- **CC:Restitched:** 1.100.8
+- **Fabric API:** 0.59.0+1.18.2
+
+#### Overview
+
+AE2CC Bridge adds a simple peripheral block that may be used to access an [Applied Energistics 2](https://github.com/AppliedEnergistics/Applied-Energistics-2)
+ME system from [ComputerCraft](https://github.com/cc-tweaked/cc-restitched) computers.
+
+Keep in mind that this mod is slightly unbalanced by design as the peripheral
+access to the ME system allows you to circumvent some channel limitations at
+practically no energy cost.
+
+> **Note**: Currently, the peripheral only exposes a fairly small API. If you
+> find that functionality you need is missing, please file a feature request in
+> our issue tracker.
