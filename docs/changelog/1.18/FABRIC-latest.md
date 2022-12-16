@@ -1,4 +1,4 @@
-### 1.0.0-1.18.2-FABRIC-0.1
+### 1.0.0-1.18.2-FABRIC-0.2
 
 _Released 2022 Dec 16_
 
@@ -9,7 +9,7 @@ _Released 2022 Dec 16_
 
 #### Fixes
 
-- Fixed an issue which prevented some cancellation reasons to not be relayed to
-  the user.
-- Fixed an issue that caused the mod version to not be reported properly in some
-  cases.
+- Fixed an issue that caused a wrong (unusable) version of the mod to be
+  published to CurseForge.
+  - This did not affect Modrinth as that publication is still manual.
+- Fixed an issue that caused embedded version information to become outdated.

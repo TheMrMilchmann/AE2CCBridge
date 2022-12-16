@@ -1,3 +1,22 @@
+### 1.0.0-1.18.2-FABRIC-0.2
+
+_Released 2022 Dec 16_
+
+#### Requirements
+- **Applied Energistics 2:** 11.6.6
+- **CC:Restitched:** 1.100.8
+- **Fabric API:** 0.59.0+1.18.2
+
+#### Fixes
+
+- Fixed an issue that caused a wrong (unusable) version of the mod to be
+  published to CurseForge.
+  - This did not affect Modrinth as that publication is still manual.
+- Fixed an issue that caused embedded version information to become outdated.
+
+
+---
+
 ### 1.0.0-1.18.2-FABRIC-0.1
 
 _Released 2022 Dec 16_
