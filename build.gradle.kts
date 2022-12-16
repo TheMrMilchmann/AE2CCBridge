@@ -41,6 +41,12 @@ tasks {
     compileJava {
         options.release.set(17)
     }
+
+    processResources {
+        filesMatching("fabric.mod.json") {
+            expand("version" to "${project.version}")
+        }
+    }
 }
 
 publishing {
