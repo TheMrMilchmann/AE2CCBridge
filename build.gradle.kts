@@ -61,7 +61,7 @@ publishing {
         create<CurseForgePublication>("curseForge") {
             projectID.set(715346) // https://www.curseforge.com/minecraft/mc-mods/ae2cc-bridge
 
-            artifact {
+            artifact(tasks.remapJar) {
                 changelog = changelog()
                 displayName = "AE2CC Bridge ${project.version}"
                 releaseType = ReleaseType.RELEASE
