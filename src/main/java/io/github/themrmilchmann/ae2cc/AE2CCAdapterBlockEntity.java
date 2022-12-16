@@ -162,13 +162,13 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 ICraftingSubmitResult craftingSubmitResult = node.getGrid().getCraftingService().trySubmitJob(craftingPlan, this, craftingCPU, false, actionSource);
                 if (!craftingSubmitResult.successful()) {
                     String reason = switch (Objects.requireNonNull(craftingSubmitResult.errorCode())) {
+                        case INCOMPLETE_PLAN -> "INCOMPLETE_PLAN";
                         case NO_CPU_FOUND -> "NO_CPU_FOUND";
                         case NO_SUITABLE_CPU_FOUND -> "NO_SUITABLE_CPU_FOUND";
                         case CPU_BUSY -> "CPU_BUSY";
                         case CPU_OFFLINE -> "CPU_OFFLINE";
                         case CPU_TOO_SMALL -> "CPU_TOO_SMALL";
                         case MISSING_INGREDIENT -> "MISSING_INGREDIENT";
-                        default -> null;
                     };
 
                     this.peripheral.notify("ae2cc:crafting_cancelled", pendingJob.id().toString(), reason);

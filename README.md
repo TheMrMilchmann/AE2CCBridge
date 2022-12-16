@@ -163,6 +163,7 @@ The reason for the cancellation is always one of:
 |----------------------|-------------------------------------------------------------|
 | `CANCELLED`          | The job was cancelled (either manually or by a machine).    |
 | `CPU_NOT_FOUND`      | The selected crafting CPU was not found.                    |
+| `INCOMPLETE_PLAN`    | No crafting plan could be calculated for the job.           |
 | `NO_CPU_FOUND`       | No crafting CPU to execute the job was found.               |
 | `CPU_BUSY`           | The selected crafting CPU is busy.                          |
 | `CPU_OFFLINE`        | The selected crafting CPU is offline.                       |
