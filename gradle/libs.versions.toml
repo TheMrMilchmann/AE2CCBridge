@@ -1,12 +1,12 @@
 [versions]
-ae2 = "11.6.6"
-cc-restitched = "1.100.8"
+ae2 = "12.9.8"
+cc-restitched = "1.101.2"
 curseforge-publish = "0.4.0"
-fabric-api = "0.59.0+1.18.2"
+fabric-api = "0.76.0+1.19.2"
 fabric-loader = "0.14.24"
 fabric-loom = "1.1.14"
 jsr305 = "3.0.2"
-minecraft = "1.18.2"
+minecraft = "1.19.2"
 
 
 [libraries]

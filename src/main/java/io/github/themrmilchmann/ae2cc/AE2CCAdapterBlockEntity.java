@@ -159,7 +159,7 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
                 }
 
                 IActionSource actionSource = IActionSource.ofMachine(this);
-                ICraftingSubmitResult craftingSubmitResult = node.getGrid().getCraftingService().trySubmitJob(craftingPlan, this, craftingCPU, false, actionSource);
+                ICraftingSubmitResult craftingSubmitResult = node.getGrid().getCraftingService().submitJob(craftingPlan, this, craftingCPU, false, actionSource);
                 if (!craftingSubmitResult.successful()) {
                     String reason = switch (Objects.requireNonNull(craftingSubmitResult.errorCode())) {
                         case INCOMPLETE_PLAN -> "INCOMPLETE_PLAN";
