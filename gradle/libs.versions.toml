@@ -5,6 +5,7 @@ curseforge-publish = "0.4.0"
 fabric-api = "0.59.0+1.18.2"
 fabric-loader = "0.14.9"
 fabric-loom = "1.1.14"
+jsr305 = "3.0.2"
 minecraft = "1.18.2"
 
 
@@ -21,6 +22,9 @@ cc-restitched = { module = "dan200.computercraft:cc-restitched", version.ref = "
 # io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish - CurseForge Gradle Publish Plugin
 # https://github.com/TheMrMilchmann/gradle-curseforge-publish
 gradle-curseforge-publish = { module = "io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish", version.ref = "curseforge-publish" }
+
+# com.google.code.findbugs:jsr305 - JSR305
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
