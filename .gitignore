@@ -9,9 +9,5 @@
 !/.idea/icon.png
 
 /build
-/out
-/run
 
-/buildSrc/.gradle
-/buildSrc/build
-/buildSrc/out
+/run

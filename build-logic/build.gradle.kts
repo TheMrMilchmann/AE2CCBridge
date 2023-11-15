@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Leon Linhart
+ * Copyright (c) 2022-2023 Leon Linhart
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.themrmilchmann.build
+plugins {
+    `kotlin-dsl`
+}
 
-data class Deployment internal constructor(
-    val type: BuildType,
-    val cfApiKey: String
-)
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(libs.gradle.curseforge.publish)
+}

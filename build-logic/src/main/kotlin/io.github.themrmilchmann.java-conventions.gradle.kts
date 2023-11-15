@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Leon Linhart
+ * Copyright (c) 2022-2023 Leon Linhart
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,14 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-pluginManagement {
-    includeBuild("build-logic")
+plugins {
+    id("io.github.themrmilchmann.base-conventions")
+    java
+}
 
-    repositories {
-        gradlePluginPortal()
-        maven(url = "https://maven.fabricmc.net")
-        mavenCentral()
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
-rootProject.name = "AE2CCBridge"
+tasks {
+    withType<JavaCompile>().configureEach {
+        options.release.set(17)
+    }
+
+    withType<JavaExec>().configureEach {
+        javaLauncher.convention(project.javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(17)) })
+    }
+}

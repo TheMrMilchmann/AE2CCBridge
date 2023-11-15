@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Leon Linhart
+ * Copyright (c) 2022-2023 Leon Linhart
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,10 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.themrmilchmann.build
+import io.github.themrmilchmann.gradle.publish.curseforge.*
 
-enum class BuildType {
-    LOCAL,
-    SNAPSHOT,
-    RELEASE
+plugins {
+    id("io.github.themrmilchmann.base-conventions")
+    id("io.github.themrmilchmann.curseforge-publish")
+}
+
+publishing {
+    repositories {
+        val curseforgeApiKey: String? by project
+
+        curseForge {
+            apiKey.set(curseforgeApiKey)
+        }
+    }
 }

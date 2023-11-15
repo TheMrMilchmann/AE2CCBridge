@@ -18,14 +18,14 @@ ae2 = { module = "appeng:appliedenergistics2-fabric", version.ref = "ae2" }
 # https://www.curseforge.com/minecraft/mc-mods/cc-restitched
 cc-restitched = { module = "dan200.computercraft:cc-restitched", version.ref = "cc-restitched" }
 
+# io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish - CurseForge Gradle Publish Plugin
+# https://github.com/TheMrMilchmann/gradle-curseforge-publish
+gradle-curseforge-publish = { module = "io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish", version.ref = "curseforge-publish" }
+
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 
 
 [plugins]
-# io.github.themrmilchmann.curseforge-publish - CurseForge Gradle Publish Plugin
-# https://github.com/TheMrMilchmann/gradle-curseforge-publish
-curseforge-publish = { id = "io.github.themrmilchmann.curseforge-publish", version.ref = "curseforge-publish" }
-
 loom = { id = "fabric-loom", version.ref = "fabric-loom" }

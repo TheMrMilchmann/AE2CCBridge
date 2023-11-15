@@ -19,29 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import com.github.themrmilchmann.build.*
-import com.github.themrmilchmann.build.BuildType
 import io.github.themrmilchmann.gradle.publish.curseforge.*
 
 plugins {
-    java
-    alias(libs.plugins.curseforge.publish)
     alias(libs.plugins.loom)
-}
-
-version = "1.1.0-1.18.2-FABRIC-0.0"
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(19))
-    }
+    id("io.github.themrmilchmann.java-conventions")
+    id("io.github.themrmilchmann.curseforge-publish-conventions")
 }
 
 tasks {
-    compileJava {
-        options.release.set(17)
-    }
-
     processResources {
         inputs.property("version", version)
 
@@ -52,11 +38,6 @@ tasks {
 }
 
 publishing {
-    repositories {
-        curseForge {
-            apiKey.set(deployment.cfApiKey)
-        }
-    }
     publications {
         create<CurseForgePublication>("curseForge") {
             projectID.set(715346) // https://www.curseforge.com/minecraft/mc-mods/ae2cc-bridge
@@ -71,21 +52,13 @@ publishing {
 }
 
 fun changelog(): Changelog {
-    if (deployment.type == BuildType.SNAPSHOT) return Changelog("", ChangelogType.TEXT)
-
-    val mc = project.version.toString() // E.g. 1.0.0-1.16.5-FABRIC-1.0
-        .substringAfter('-')            //            1.16.5-FABRIC-1.0
-        .substringBefore('-')           //            1.16.5-FABRIC
-        .substringBefore('-')           //            1.16.5
-        .let {
-            if (it.count { it == '.' } == 1)
-                it
-            else
-                it.substringBeforeLast('.')
-        }                               //            1.16
+    val modVersionSegment = version.toString().substringBefore('-')
+    val mcVersionSegment = version.toString().substring(startIndex = modVersionSegment.length + 1).substringBefore('-')
+    val mcVersionGroup = if (mcVersionSegment.count { it == '.' } == 1) mcVersionSegment else mcVersionSegment.substringBeforeLast('.')
+    val loaderVersionSegment = version.toString().substring(startIndex = modVersionSegment.length + mcVersionSegment.length + 2)
 
     return Changelog(
-        content = File(rootDir, "docs/changelog/$mc/${project.version}.md").readText(),
+        content = File(rootDir, "docs/changelog/$mcVersionGroup/${modVersionSegment}-${mcVersionSegment}-${loaderVersionSegment}.md").readText(),
         type = ChangelogType.MARKDOWN
     )
 }
