@@ -7,9 +7,10 @@ Keep in mind that this mod is slightly unbalanced by design as the peripheral
 access to the ME system allows you to circumvent some channel limitations at
 practically no energy cost.
 
-> **Note**: Currently, the peripheral only exposes a fairly small API. If you
-> find that functionality you need is missing, please file a feature request in
-> our issue tracker.
+> [!NOTE]
+> Currently, the peripheral only exposes a fairly small API. If you find that
+> functionality you need is missing, please file a feature request in our issue
+> tracker.
 
 
 ## Peripheral API (Functions)
@@ -217,9 +218,10 @@ version was written for (e.g. "FABRIC").
 
 ## Supported versions
 
-| Minecraft Version | State              |
-|-------------------|--------------------|
-| 1.18              | Mainline           |
+| Minecraft Version                                          | State              |
+|------------------------------------------------------------|--------------------|
+| 1.19                                                       | Mainline           |
+| [1.18](https://github.com/TheMrMilchmann/AE2CCBridge-1.18) | Active Development |
 
 **This is the mainline repository** for the development of _AE2CC Bridge_ which
 usually targets the most recent Minecraft version. The development for other
