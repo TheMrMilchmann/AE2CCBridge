@@ -39,7 +39,7 @@ tasks {
 
 publishing {
     publications {
-        create<CurseForgePublication>("curseForge") {
+        register<CurseForgePublication>("curseForge") {
             projectID.set(715346) // https://www.curseforge.com/minecraft/mc-mods/ae2cc-bridge
 
             artifact(tasks.remapJar) {
