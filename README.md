@@ -219,14 +219,15 @@ version was written for (e.g. "FABRIC").
 
 ## Supported versions
 
-| Minecraft Version                                          | State              |
-|------------------------------------------------------------|--------------------|
-| 1.19                                                       | Mainline           |
-| [1.18](https://github.com/TheMrMilchmann/AE2CCBridge-1.18) | Active Development |
+| Minecraft Version                                               | State              |
+|-----------------------------------------------------------------|--------------------|
+| 1.19                                                            | Mainline           |
+| [1.18](https://github.com/TheMrMilchmann/AE2CCBridge/tree/1.18) | Active Development |
 
-**This is the mainline repository** for the development of _AE2CC Bridge_ which
-usually targets the most recent Minecraft version. The development for other
-versions of Minecraft happens in the repositories linked in the table above.
+**This is the mainline branch** for the development of _AE2CC Bridge_
+which usually targets the most recent Minecraft version. The development for
+other versions of Minecraft happens in the repositories and branches linked in
+the table above.
 
 
 ### Support Cycle
