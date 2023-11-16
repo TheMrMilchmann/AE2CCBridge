@@ -221,7 +221,8 @@ version was written for (e.g. "FABRIC").
 
 | Minecraft Version                                               | State              |
 |-----------------------------------------------------------------|--------------------|
-| 1.19                                                            | Mainline           |
+| 1.20                                                            | Mainline           |
+| [1.18](https://github.com/TheMrMilchmann/AE2CCBridge/tree/1.19) | Active Development |
 | [1.18](https://github.com/TheMrMilchmann/AE2CCBridge/tree/1.18) | Active Development |
 
 **This is the mainline branch** for the development of _AE2CC Bridge_
@@ -244,7 +245,7 @@ the table above.
 
 ### Setup
 
-This project uses [Gradle's toolchain support](https://docs.gradle.org/7.6/userguide/toolchains.html)
+This project uses [Gradle's toolchain support](https://docs.gradle.org/7.6.3/userguide/toolchains.html)
 to detect and select the JDKs required to run the build. Please refer to the
 build scripts to find out which toolchains are requested.
 
