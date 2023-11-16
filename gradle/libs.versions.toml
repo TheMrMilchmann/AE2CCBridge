@@ -1,7 +1,7 @@
 [versions]
 ae2 = "12.9.8"
 cc-restitched = "1.101.2"
-curseforge-publish = "0.4.0"
+curseforge-publish = "0.5.0"
 fabric-api = "0.76.0+1.19.2"
 fabric-loader = "0.14.24"
 fabric-loom = "1.1.14"
