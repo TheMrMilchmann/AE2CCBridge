@@ -96,13 +96,8 @@ repositories {
 
     maven(url = "https://squiddev.cc/maven") {
         content {
+            includeGroup("cc.tweaked")
             includeGroup("org.squiddev")
-        }
-    }
-
-    mavenLocal {
-        content {
-            includeGroup("dan200.computercraft")
         }
     }
 }
@@ -117,5 +112,6 @@ dependencies {
     modImplementation(libs.fabric.loader)
 
     modImplementation(libs.ae2)
-    modImplementation(libs.cc.restitched)
+    modImplementation(libs.ccTweakedApi)
+    modRuntimeOnly(libs.ccTweaked)
 }

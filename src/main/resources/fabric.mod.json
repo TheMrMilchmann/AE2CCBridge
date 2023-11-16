@@ -24,10 +24,10 @@
 
     "depends": {
         "ae2": ">=12.9.8",
-        "computercraft": ">=1.101.2",
-        "fabric": "*",
-        "fabricloader": ">=0.14.24",
-        "minecraft": "~1.19",
+        "computercraft": ">=1.105.0",
+        "fabric-api": ">=0.83",
+        "fabricloader": ">=0.14",
+        "minecraft": "~1.20",
         "java": ">=17"
     }
 }

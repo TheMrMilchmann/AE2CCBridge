@@ -1,12 +1,12 @@
 [versions]
-ae2 = "12.9.8"
-cc-restitched = "1.101.2"
+ae2 = "15.0.10"
+cc-tweaked = "1.105.0"
 curseforge-publish = "0.5.0"
-fabric-api = "0.76.0+1.19.2"
+fabric-api = "0.83.0+1.20.1"
 fabric-loader = "0.14.24"
 fabric-loom = "1.1.14"
 jsr305 = "3.0.2"
-minecraft = "1.19.2"
+minecraft = "1.20.1"
 
 
 [libraries]
@@ -14,10 +14,11 @@ minecraft = "1.19.2"
 # https://github.com/AppliedEnergistics/Applied-Energistics-2
 ae2 = { module = "appeng:appliedenergistics2-fabric", version.ref = "ae2" }
 
-# com.github.cc-tweaked - CC:Restitched
-# https://github.com/cc-tweaked/cc-restitched
-# https://www.curseforge.com/minecraft/mc-mods/cc-restitched
-cc-restitched = { module = "dan200.computercraft:cc-restitched", version.ref = "cc-restitched" }
+# cc.tweaked - CC:Tweaked
+# https://github.com/cc-tweaked/CC-Tweaked
+# https://www.curseforge.com/minecraft/mc-mods/cc-tweaked
+ccTweakedApi = { module = "cc.tweaked:cc-tweaked-1.20.1-fabric-api", version.ref = "cc-tweaked" }
+ccTweaked = { module = "cc.tweaked:cc-tweaked-1.20.1-fabric", version.ref = "cc-tweaked" }
 
 # io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish - CurseForge Gradle Publish Plugin
 # https://github.com/TheMrMilchmann/gradle-curseforge-publish

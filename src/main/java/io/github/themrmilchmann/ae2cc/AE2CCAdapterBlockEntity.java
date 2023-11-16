@@ -42,10 +42,13 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
@@ -492,11 +495,11 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
 
             AEKey key = switch (type) {
                 case "fluid" -> {
-                    Fluid fluid = Registry.FLUID.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Fluid does not exist: " + resourceLocation));
+                    Fluid fluid = BuiltInRegistries.FLUID.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Fluid does not exist: " + resourceLocation));
                     yield AEFluidKey.of(fluid);
                 }
                 case "item" -> {
-                    Item item = Registry.ITEM.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Item does not exist: " + resourceLocation));
+                    Item item = BuiltInRegistries.ITEM.getOptional(resourceLocation).orElseThrow(() -> new LuaException("Item does not exist: " + resourceLocation));
                     yield AEItemKey.of(item);
                 }
                 default -> throw new LuaException("Invalid type: '" + type + "' (Valid types are 'fluid' and 'item')");

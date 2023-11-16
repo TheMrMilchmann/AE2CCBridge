@@ -26,13 +26,6 @@ jobs:
           distribution: "temurin"
           java-version: ${{ env.JDK_VERSION }}
 
-      - name: "Install CC:Restitched"
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: jar publishToMavenLocal --info -S --show-version
-          build-root-directory: deps/cc-restitched
-          gradle-home-cache-cleanup: true
-
       - name: Gradle Build
         uses: gradle/gradle-build-action@v2
         with:
