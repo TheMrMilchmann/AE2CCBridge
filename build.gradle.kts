@@ -38,10 +38,10 @@ tasks {
     }
 }
 
-publishing {
+curseforge {
     publications {
-        register<CurseForgePublication>("curseForge") {
-            projectID.set(715346) // https://www.curseforge.com/minecraft/mc-mods/ae2cc-bridge
+        named("fabric") {
+            projectId = "715346" // https://www.curseforge.com/minecraft/mc-mods/ae2cc-bridge
 
             artifact {
                 changelog = changelog()

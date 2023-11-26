@@ -1,7 +1,7 @@
 [versions]
 ae2 = "15.0.10"
 cc-tweaked = "1.105.0"
-curseforge-publish = "0.5.0"
+curseforge-publish = "0.6.0"
 fabric-api = "0.83.0+1.20.1"
 fabric-loader = "0.14.24"
 fabric-loom = "1.1.14"

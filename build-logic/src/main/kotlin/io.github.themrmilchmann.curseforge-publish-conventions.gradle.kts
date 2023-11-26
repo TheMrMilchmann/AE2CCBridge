@@ -19,19 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import io.github.themrmilchmann.gradle.publish.curseforge.*
-
 plugins {
     id("io.github.themrmilchmann.base-conventions")
     id("io.github.themrmilchmann.curseforge-publish")
 }
 
-publishing {
-    repositories {
-        val curseforgeApiKey: String? by project
-
-        curseForge {
-            apiKey.set(curseforgeApiKey)
-        }
-    }
+curseforge {
+    apiKey = providers.gradleProperty("curseforgeApiKey")
 }
