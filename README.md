@@ -245,7 +245,7 @@ the table above.
 
 ### Setup
 
-This project uses [Gradle's toolchain support](https://docs.gradle.org/7.6.3/userguide/toolchains.html)
+This project uses [Gradle's toolchain support](https://docs.gradle.org/8.5/userguide/toolchains.html)
 to detect and select the JDKs required to run the build. Please refer to the
 build scripts to find out which toolchains are requested.
 
@@ -270,7 +270,7 @@ or the following command on Windows:
 
 Important Gradle tasks to remember are:
 - `clean`                   - clean build results
-- `build`                   - assemble and test the Java library
+- `build`                   - assemble and test the project
 - `runClient`               - runs the development client
 - `runServer`               - runs the development server
 
