@@ -25,5 +25,6 @@ plugins {
 }
 
 curseforge {
-    apiKey = providers.gradleProperty("curseforgeApiKey")
+    val curseforgeApiToken: String? by project
+    apiToken.convention(curseforgeApiToken)
 }
