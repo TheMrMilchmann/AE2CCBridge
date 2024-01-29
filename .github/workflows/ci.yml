@@ -27,7 +27,7 @@ jobs:
           java-version: ${{ env.JDK_VERSION }}
 
       - name: Gradle Build
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: build --info -S --show-version
           gradle-home-cache-cleanup: true
