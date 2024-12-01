@@ -1,0 +1,100 @@
+name: Publish
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment to publish to
+        type: environment
+
+
+env:
+  JDK_VERSION: "23"
+  WORKSPACE_ARCHIVE: workspace.tar
+  WORKSPACE_ARTIFACT: build-results
+
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JDK_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Gradle Build
+        run: ./gradlew build --info -S --show-version
+
+      - name: Tar files
+        run: tar -cvf ${{ env.WORKSPACE_ARCHIVE }} .
+
+      - name: Upload workspace artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.WORKSPACE_ARTIFACT }}
+          path: ${{ env.WORKSPACE_ARCHIVE }}
+          retention-days: 1
+
+
+  cf-release:
+    name: Release to CurseForge
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.WORKSPACE_ARTIFACT }}
+          path: .
+
+      - name: Untar
+        run: |
+          tar -xvf ${{ env.WORKSPACE_ARCHIVE }}
+          rm ${{ env.WORKSPACE_ARCHIVE }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JDK_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Gradle Publish
+        env:
+          ORG_GRADLE_PROJECT_curseforgeApiToken: ${{ secrets.CURSEFORGE_API_TOKEN }}
+        run: ./gradlew publishToCurseForge --info -S --show-version
+
+
+  # So, what's happening here?
+  #
+  # Basically, restoring the workspace state between jobs is incredibly annoying.
+  # We can get reasonable support by using the upload-/download-artifact
+  # actions, but they suffer from a severe limitation:
+  # GH Actions has a storage limit and the minimum retention is 24 hours...
+  #
+  # Since the storage quota is limited, we have to make sure that the artifact
+  # is removed. Unfortunately, there is no official way to do this, so we resort
+  # to a third party action for now.
+  #
+  # See also: https://github.com/actions/upload-artifact/issues/290
+  cleanup:
+    name: Cleanup
+    if: ${{ always() }}
+    needs: cf-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup
+        uses: GeekyEggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b
+        with:
+          name: ${{ env.WORKSPACE_ARTIFACT }}
