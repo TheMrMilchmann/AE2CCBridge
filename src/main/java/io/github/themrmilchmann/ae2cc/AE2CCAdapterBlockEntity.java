@@ -25,6 +25,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -346,6 +347,8 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
             }
         }
 
+        // Crafting
+
         @LuaFunction(mainThread = true)
         public final List<Map<String, Object>> getAvailableObjects() throws LuaException {
             IGrid grid = blockEntity.getMainNode().getGrid();
@@ -531,6 +534,62 @@ public final class AE2CCAdapterBlockEntity extends AENetworkBlockEntity implemen
             } finally {
                 pendingJobLock.unlock();
             }
+        }
+
+        // Energy
+
+        @LuaFunction(mainThread = true)
+        public final double getAveragePowerInjection() throws LuaException {
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getAvgPowerInjection();
+        }
+
+        @LuaFunction(mainThread = true)
+        public final double getAveragePowerUsage() throws LuaException {
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getAvgPowerUsage();
+        }
+
+        @LuaFunction(mainThread = true)
+        public final double getChannelPowerUsage() throws LuaException {
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getChannelPowerUsage();
+        }
+
+        @LuaFunction(mainThread = true)
+        public final double getIdlePowerUsage() throws LuaException{
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getIdlePowerUsage();
+        }
+
+        @LuaFunction(mainThread = true)
+        public final double getMaxStoredPower() throws LuaException{
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getMaxStoredPower();
+        }
+
+        @LuaFunction(mainThread = true)
+        public final double getStoredPower() throws LuaException{
+            IGrid grid = blockEntity.getMainNode().getGrid();
+            if (grid == null) throw new LuaException("Cannot connect to AE2 Network");
+
+            IEnergyService energyService = grid.getEnergyService();
+            return energyService.getStoredPower();
         }
 
     }

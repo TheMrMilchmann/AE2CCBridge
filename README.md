@@ -13,8 +13,7 @@ ME system from [ComputerCraft](https://github.com/cc-tweaked/cc-restitched) comp
 > functionality you need is missing, please file a feature request in our issue
 > tracker.
 
-
-## Peripheral API (Functions)
+## Peripheral API - Crafting (Functions)
 
 ### `getAvailableObjects()`
 
@@ -145,7 +144,7 @@ Additionally, if the job is cancelled or an error occurs at any point of the
 crafting job's lifecycle, the `ae2cc:crafting_cancelled` event is fired.
 
 
-## Peripheral API (Events)
+## Peripheral API - Crafting (Events)
 
 ### `ae2cc:crafting_cancelled`
 
@@ -192,6 +191,62 @@ _SCHEDULED_ crafting job changes to _STARTED_.
 
 1. `string` – the name of the event 
 2. `string` – the ID of the started crafting job
+
+
+## Peripheral API - Energy (Functions)
+
+### `getAveragePowerInjection()`
+
+Returns the average energy injected into the ME system per tick, for the last 10 ticks.
+
+#### Returns
+
+1. `number` – the average injected energy
+
+
+### `getAveragePowerUsage()`
+
+Returns the average power drain over the past 10 ticks.
+
+#### Returns
+
+1. `number` – the drained power
+
+
+### `getChannelPowerUsage()`
+
+Returns the current idle power usage of channels in the ME system.
+
+#### Returns
+
+1. `number` – the power used by idle channels
+
+
+### `getIdlePowerUsage()`
+
+Returns the current calculated total idle power usage of the ME system.
+
+#### Returns
+
+1. `number` – the power drained from the ME system each tick while idle
+
+
+### `getMaxStoredPower()`
+
+Returns the (estimated) maximum amount of power that can be stored in the ME system.
+
+#### Returns
+
+1. `number` – the estimated maximum stored power
+
+
+### `getStoredPower()`
+
+Returns the (estimated) amount of power stored in the ME system.
+
+#### Returns
+
+1. `number` – the estimated stored power
 
 
 ## Versioning
