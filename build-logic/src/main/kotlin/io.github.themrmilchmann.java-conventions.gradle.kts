@@ -26,13 +26,13 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 tasks {
     withType<JavaCompile>().configureEach {
-        options.release.set(17)
+        options.release = 17
     }
 
     withType<JavaExec>().configureEach {
