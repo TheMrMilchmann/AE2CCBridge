@@ -39,3 +39,11 @@ plugins {
 }
 
 rootProject.name = "AE2CCBridge"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        register("buildDeps") {
+            from(files("./gradle/build.versions.toml"))
+        }
+    }
+}

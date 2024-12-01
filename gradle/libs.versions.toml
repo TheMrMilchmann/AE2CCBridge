@@ -1,10 +1,8 @@
 [versions]
 ae2 = "15.0.10"
 cc-tweaked = "1.105.0"
-curseforge-publish = "0.6.1"
 fabric-api = "0.83.0+1.20.1"
 fabric-loader = "0.14.24"
-fabric-loom = "1.9.1"
 jsr305 = "3.0.2"
 minecraft = "1.20.1"
 
@@ -20,9 +18,6 @@ ae2 = { module = "appeng:appliedenergistics2-fabric", version.ref = "ae2" }
 ccTweakedApi = { module = "cc.tweaked:cc-tweaked-1.20.1-fabric-api", version.ref = "cc-tweaked" }
 ccTweaked = { module = "cc.tweaked:cc-tweaked-1.20.1-fabric", version.ref = "cc-tweaked" }
 
-# io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish - CurseForge Gradle Publish Plugin
-# https://github.com/TheMrMilchmann/gradle-curseforge-publish
-gradle-curseforge-publish = { module = "io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish", version.ref = "curseforge-publish" }
 
 # com.google.code.findbugs:jsr305 - JSR305
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
@@ -30,7 +25,3 @@ jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-
-
-[plugins]
-loom = { id = "fabric-loom", version.ref = "fabric-loom" }

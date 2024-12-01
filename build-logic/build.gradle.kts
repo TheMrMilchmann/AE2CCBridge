@@ -29,5 +29,5 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.gradle.curseforge.publish)
+    implementation(buildDeps.gradle.curseforge.publish)
 }

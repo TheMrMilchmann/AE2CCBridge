@@ -22,7 +22,7 @@
 import io.github.themrmilchmann.gradle.publish.curseforge.*
 
 plugins {
-    alias(libs.plugins.loom)
+    alias(buildDeps.plugins.loom)
     id("io.github.themrmilchmann.java-conventions")
     id("io.github.themrmilchmann.curseforge-publish-conventions")
 }

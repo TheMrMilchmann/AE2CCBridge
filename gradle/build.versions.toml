@@ -1,0 +1,9 @@
+[libraries]
+# io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish - CurseForge Gradle Publish Plugin
+# https://github.com/TheMrMilchmann/gradle-curseforge-publish
+gradle-curseforge-publish = { module = "io.github.themrmilchmann.gradle.publish.curseforge:gradle-curseforge-publish", version = "0.6.1" }
+
+[plugins]
+# fabric-loom - Fabric Loom
+# https://github.com/FabricMC/fabric-loom
+loom = { id = "fabric-loom", version = "1.9.1" }
