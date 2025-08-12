@@ -6,4 +6,4 @@ gradle-curseforge-publish = { module = "io.github.themrmilchmann.gradle.publish.
 [plugins]
 # fabric-loom - Fabric Loom
 # https://github.com/FabricMC/fabric-loom
-loom = { id = "fabric-loom", version = "1.11.5" }
+loom = { id = "fabric-loom", version = "1.11.6" }
