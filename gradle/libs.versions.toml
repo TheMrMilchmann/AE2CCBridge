@@ -1,5 +1,5 @@
 [versions]
-ae2 = "15.0.10"
+ae2 = "15.4.10"
 cc-tweaked = "1.105.0"
 fabric-api = "0.83.0+1.20.1"
 fabric-loader = "0.14.24"
